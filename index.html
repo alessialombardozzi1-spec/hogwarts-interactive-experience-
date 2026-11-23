@@ -4,90 +4,236 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hogwarts | The Interactive Experience</title>
+
 <style>
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  background: #10131c;
-  color: #f5e8c8;
+  background: #10131b;
+  color: #f4e6c5;
   font-family: Georgia, serif;
+}
+
+header {
   text-align: center;
+  padding: 25px 10px;
+  background: #111a29;
+  border-bottom: 1px solid #a58a54;
 }
-header { padding: 35px 12px 20px; }
-h1 { font-size: 38px; letter-spacing: 5px; margin: 0; }
-h2 { font-size: 15px; letter-spacing: 3px; font-weight: normal; }
-#scene {
-  min-height: 65vh;
-  padding: 35px 15px;
-  background: linear-gradient(#17243a,#11131c);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+
+h1 {
+  font-size: 36px;
+  letter-spacing: 6px;
+  margin: 0;
 }
-#scene h3 { font-size: 30px; }
-#places {
+
+header p {
+  letter-spacing: 3px;
+  font-size: 12px;
+}
+
+main {
+  padding: 18px;
+  max-width: 850px;
+  margin: auto;
+}
+
+.welcome {
+  text-align: center;
+  padding: 55px 15px;
+  background: linear-gradient(145deg,#26364b,#111722);
+  border: 1px solid #a58a54;
+  border-radius: 12px;
+  margin-bottom: 25px;
+}
+
+.welcome h2 {
+  font-size: 29px;
+}
+
+.welcome p {
+  line-height: 1.6;
+}
+
+h3 {
+  text-align: center;
+  font-size: 23px;
+  margin-top: 30px;
+}
+
+.places {
   display: grid;
   grid-template-columns: repeat(2,1fr);
   gap: 12px;
-  width: 100%;
-  max-width: 600px;
 }
+
 button {
-  background: #29354b;
-  color: #f5e8c8;
-  border: 1px solid #b69b65;
-  border-radius: 8px;
-  padding: 20px 8px;
-  font: 17px Georgia,serif;
+  min-height: 75px;
+  padding: 15px 8px;
+  background: #26364b;
+  color: #f4e6c5;
+  border: 1px solid #a58a54;
+  border-radius: 9px;
+  font-family: Georgia,serif;
+  font-size: 17px;
   cursor: pointer;
 }
-button:active { background: #665331; }
-#back { margin: 20px; display: none; }
-footer { padding: 20px; color: #b9a77e; }
+
+button:active {
+  background: #705b35;
+}
+
+.room {
+  display: none;
+  text-align: center;
+  padding: 30px 12px;
+  min-height: 65vh;
+}
+
+.room h2 {
+  font-size: 30px;
+}
+
+.room p {
+  line-height: 1.7;
+}
+
+.room-content {
+  padding: 35px 15px;
+  margin: 25px 0;
+  background: linear-gradient(145deg,#29384c,#171d29);
+  border: 1px solid #a58a54;
+  border-radius: 12px;
+}
+
+.back {
+  margin-top: 20px;
+  width: 100%;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #a58a54;
+  font-size: 13px;
+}
 </style>
 </head>
+
 <body>
 
 <header>
-<h1>HOGWARTS</h1>
-<h2>THE INTERACTIVE EXPERIENCE</h2>
+  <h1>HOGWARTS</h1>
+  <p>THE INTERACTIVE EXPERIENCE</p>
 </header>
 
-<main id="scene">
-<h3>Benvenuta a Hogwarts</h3>
-<p>Esplora il castello e scopri i suoi segreti.</p>
-<div id="places">
-<button onclick="enter('Sala Grande')">Sala Grande</button>
-<button onclick="enter('Biblioteca')">Biblioteca</button>
-<button onclick="enter('Aula di Pozioni')">Aula di Pozioni</button>
-<button onclick="enter('Cortile')">Cortile</button>
-<button onclick="enter('Scalinata')">Scalinata</button>
-<button onclick="enter('Sala Comune')">Sale Comuni</button>
-</div>
+<main>
+
+<section id="home">
+  <div class="welcome">
+    <h2>Benvenuta a Hogwarts</h2>
+    <p>La scuola di magia e stregoneria ti aspetta.</p>
+    <p>Seleziona un luogo per iniziare la tua esplorazione.</p>
+  </div>
+
+  <h3>Esplora il castello</h3>
+
+  <div class="places">
+    <button onclick="openRoom('Sala Grande')">Sala Grande</button>
+    <button onclick="openRoom('Biblioteca')">Biblioteca</button>
+    <button onclick="openRoom('Scalinata')">Scalinata</button>
+    <button onclick="openRoom('Aula di Pozioni')">Aula di Pozioni</button>
+    <button onclick="openRoom('Aula di Incantesimi')">Aula di Incantesimi</button>
+    <button onclick="openRoom('Cortile')">Cortile</button>
+    <button onclick="openRoom('Sotterranei')">Sotterranei</button>
+    <button onclick="openRoom('Sala Comune')">Sale Comuni</button>
+    <button onclick="openRoom('Infermeria')">Infermeria</button>
+    <button onclick="openRoom('Parco')">Parco</button>
+    <button onclick="openRoom('Torre di Astronomia')">Torre di Astronomia</button>
+    <button onclick="openRoom('Foresta Proibita')">Foresta Proibita</button>
+  </div>
+</section>
+
+<section id="room" class="room">
+  <h2 id="roomTitle"></h2>
+
+  <div class="room-content">
+    <p id="roomDescription"></p>
+    <h3>Esplora questo ambiente</h3>
+    <div id="roomLinks" class="places"></div>
+  </div>
+
+  <button class="back" onclick="goHome()">← Torna alla mappa di Hogwarts</button>
+</section>
+
 </main>
 
-<button id="back" onclick="home()">← Torna a Hogwarts</button>
-
-<footer>Una nuova avventura ti aspetta.</footer>
+<footer>
+  HOGWARTS · THE INTERACTIVE EXPERIENCE
+</footer>
 
 <script>
-const scene = document.getElementById('scene');
-const back = document.getElementById('back');
+const descriptions = {
+  "Sala Grande": "La grande sala dove gli studenti mangiano e si riuniscono.",
+  "Biblioteca": "Un luogo silenzioso pieno di libri e antichi volumi.",
+  "Scalinata": "Le scale monumentali che collegano i piani del castello.",
+  "Aula di Pozioni": "L'aula sotterranea dedicata alla preparazione delle pozioni.",
+  "Aula di Incantesimi": "Qui gli studenti imparano gli incantesimi.",
+  "Cortile": "Un cortile in pietra nel cuore del castello.",
+  "Sotterranei": "I corridoi e le stanze sotto il castello.",
+  "Sala Comune": "Gli spazi riservati agli studenti delle Case.",
+  "Infermeria": "Il luogo dove vengono curati gli studenti.",
+  "Parco": "I grandi prati che circondano Hogwarts.",
+  "Torre di Astronomia": "La torre più alta del castello, dedicata all'osservazione del cielo.",
+  "Foresta Proibita": "Una foresta misteriosa ai confini della scuola."
+};
 
-function enter(place) {
-  scene.innerHTML = `
-    <h3>${place}</h3>
-    <p>Sei entrata in ${place}.</p>
-    <p>Esplora questo luogo di Hogwarts.</p>
-  `;
-  back.style.display = 'inline-block';
+function openRoom(name) {
+  document.getElementById("home").style.display = "none";
+  document.getElementById("room").style.display = "block";
+
+  document.getElementById("roomTitle").textContent = name;
+  document.getElementById("roomDescription").textContent =
+    descriptions[name] || "Esplora questo luogo di Hogwarts.";
+
+  const links = document.getElementById("roomLinks");
+  links.innerHTML = "";
+
+  const destinations = {
+    "Sala Grande": ["Scalinata","Cortile","Biblioteca"],
+    "Biblioteca": ["Sala Grande","Scalinata"],
+    "Scalinata": ["Sala Grande","Biblioteca","Aula di Incantesimi","Torre di Astronomia"],
+    "Aula di Pozioni": ["Sotterranei","Sala Grande"],
+    "Aula di Incantesimi": ["Scalinata","Sala Grande"],
+    "Cortile": ["Sala Grande","Parco"],
+    "Sotterranei": ["Aula di Pozioni","Sala Comune"],
+    "Sala Comune": ["Sala Grande","Sotterranei"],
+    "Infermeria": ["Scalinata","Sala Grande"],
+    "Parco": ["Cortile","Foresta Proibita"],
+    "Torre di Astronomia": ["Scalinata","Parco"],
+    "Foresta Proibita": ["Parco"]
+  };
+
+  (destinations[name] || ["Sala Grande"]).forEach(place => {
+    const button = document.createElement("button");
+    button.textContent = place;
+    button.onclick = () => openRoom(place);
+    links.appendChild(button);
+  });
+
+  window.scrollTo(0,0);
 }
 
-function home() {
-  location.reload();
+function goHome() {
+  document.getElementById("room").style.display = "none";
+  document.getElementById("home").style.display = "block";
+  window.scrollTo(0,0);
 }
 </script>
 
 </body>
 </html>
+
