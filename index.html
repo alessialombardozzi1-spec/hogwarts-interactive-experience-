@@ -2,149 +2,303 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hogwarts | The Interactive Experience</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Hogwarts 3D Experience</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#10131b;color:#f5f0e5;font-family:Georgia,serif}
-header{height:65px;background:#090c12;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid #a58b55}
-.logo{letter-spacing:3px;font-size:17px}
-button{cursor:pointer;font-family:Georgia,serif}
-.hero{min-height:440px;background:linear-gradient(90deg,rgba(5,8,14,.9),rgba(5,8,14,.15)),url('https://upload.wikimedia.org/wikipedia/commons/e/ef/Warwick_castle_interior.jpg') center/cover;display:flex;align-items:center;padding:45px}
-.hero h1{font-size:clamp(36px,7vw,66px);max-width:650px;margin:10px 0}
-.hero p{font-size:17px;max-width:440px;line-height:1.6}
-.eyebrow{letter-spacing:4px;color:#d2b779;font-size:12px}
-.gold{color:#d2b779}
-.main{padding:35px 22px;max-width:1250px;margin:auto}
-.section-title{text-align:center;font-size:27px;margin:10px 0 8px}
-.subtitle{text-align:center;color:#b9b3a7;margin-bottom:30px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:17px}
-.place{height:185px;border:1px solid #655638;border-radius:5px;position:relative;overflow:hidden;background-size:cover;background-position:center;display:flex;align-items:end;padding:17px;text-align:left;color:white;width:100%;transition:.25s}
-.place:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent,rgba(0,0,0,.9))}
-.place span{z-index:1;font-size:21px}
-.place:hover{transform:scale(1.025);border-color:#e2c37e}
-.room{display:none;max-width:1200px;margin:auto;padding:25px 20px 50px}
-.room-image{height:min(55vw,440px);min-height:260px;background-size:cover;background-position:center;border:1px solid #9b804c;border-radius:5px;position:relative}
-.room-info{padding:20px 0}
-.room-info h2{font-size:34px;margin:0 0 10px}
-.room-info p{color:#d0c8b8;line-height:1.6}
-.back,.small-btn{background:#b69a61;color:#10131b;border:0;padding:12px 18px;border-radius:3px;margin:8px 5px 8px 0}
-.hotspots{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-top:20px}
-.hotspot{background:#202633;color:#eee2c7;border:1px solid #655638;padding:15px;border-radius:4px}
-.hotspot:hover{background:#394253}
-#detail{margin-top:15px;padding:15px;background:#202633;border-left:3px solid #b69a61;display:none;line-height:1.5}
-footer{text-align:center;padding:25px;color:#928b7c;font-size:12px;border-top:1px solid #51452e}
-@media(max-width:600px){.hero{padding:25px;min-height:390px}.main{padding:25px 15px}.logo{font-size:12px}}
+body{margin:0;overflow:hidden;background:#090b12;color:#fff;font-family:Georgia,serif}
+canvas{display:block}
+#hud{position:fixed;top:0;left:0;width:100%;padding:15px;display:flex;justify-content:space-between;pointer-events:none;text-shadow:0 2px 5px #000}
+#title{letter-spacing:3px;color:#e4c88d;font-size:14px}
+#location{font-size:13px;color:#fff}
+#help{position:fixed;top:65px;left:15px;color:#ddd;font:12px Arial;background:#111a;padding:9px;border-radius:5px}
+#controls{position:fixed;bottom:22px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:end;pointer-events:none}
+.pad{display:grid;grid-template-columns:repeat(3,53px);grid-template-rows:repeat(3,53px);gap:5px;pointer-events:auto}
+.control{border:1px solid #c4a66b;background:#171b25dd;color:#f5dfae;border-radius:12px;font-size:22px;touch-action:none}
+.control:active{background:#8a7044}
+#look{position:fixed;right:18px;bottom:170px;background:#171b25bb;border:1px solid #c4a66b;border-radius:20px;padding:10px;font:12px Arial;pointer-events:none}
+#message{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);background:#111c;padding:9px 15px;border-radius:7px;font:13px Arial;text-align:center;max-width:90%;pointer-events:none}
+#start{position:fixed;inset:0;background:linear-gradient(#080b14dd,#080b14ee),url('https://upload.wikimedia.org/wikipedia/commons/e/ef/Warwick_castle_interior.jpg') center/cover;display:flex;align-items:center;justify-content:center;z-index:5;text-align:center;padding:25px}
+#start h1{font-size:clamp(35px,8vw,65px);color:#e4c88d;letter-spacing:4px}
+#start p{max-width:440px;line-height:1.6;color:#eee}
+#enter{background:#b69a61;color:#111;border:0;padding:15px 30px;font:16px Georgia;letter-spacing:2px;border-radius:4px}
+#crosshair{position:fixed;top:50%;left:50%;width:5px;height:5px;border-radius:50%;background:#e8d4a5;transform:translate(-50%,-50%);pointer-events:none}
 </style>
 </head>
 <body>
 
-<header>
-<div class="logo">HOGWARTS</div>
-<div class="eyebrow">THE INTERACTIVE EXPERIENCE</div>
-</header>
-
-<section class="hero" id="home">
-<div>
-<div class="eyebrow">SCUOLA DI MAGIA E STREGONERIA</div>
-<h1>Benvenuti a Hogwarts</h1>
-<p>Esplora il castello, visita le aule, scopri i luoghi segreti e vivi la quotidianità della scuola.</p>
-<button class="back" onclick="document.getElementById('places').scrollIntoView({behavior:'smooth'})">ESPLORA IL CASTELLO</button>
+<div id="start">
+ <div>
+  <div style="letter-spacing:5px;color:#d4bb82">SCUOLA DI MAGIA E STREGONERIA</div>
+  <h1>HOGWARTS</h1>
+  <p>Entra nel castello e inizia la tua esplorazione. Cammina liberamente tra gli ambienti e scopri i suoi corridoi.</p>
+  <button id="enter">ENTRA NEL CASTELLO</button>
+ </div>
 </div>
-</section>
 
-<main class="main" id="places">
-<h2 class="section-title">Esplora Hogwarts</h2>
-<p class="subtitle">Scegli un luogo per entrare e visitarlo.</p>
-<div class="grid" id="grid"></div>
-</main>
-
-<section class="room" id="room">
-<button class="back" onclick="goHome()">← TORNA AL CASTELLO</button>
-<div class="room-image" id="roomImage"></div>
-<div class="room-info">
-<div class="eyebrow">HOGWARTS · ESPLORAZIONE</div>
-<h2 id="roomTitle"></h2>
-<p id="roomDescription"></p>
-<h3 class="gold">Esplora gli oggetti</h3>
-<p>Seleziona un elemento per scoprirne i dettagli.</p>
-<div class="hotspots" id="hotspots"></div>
-<div id="detail"></div>
+<div id="hud">
+ <div id="title">HOGWARTS · 3D EXPERIENCE</div>
+ <div id="location">Ingresso principale</div>
 </div>
-<h3 class="gold">Altri luoghi da visitare</h3>
-<div class="grid" id="otherPlaces"></div>
-</section>
 
-<footer>
-Progetto fan-made non ufficiale, non affiliato a Warner Bros. o ai proprietari di Harry Potter.<br>
-Fotografie CC0 da Wikimedia Commons. Crediti: Pasicles, BathyMetrix, En Merker, Warren LeMay.
-</footer>
+<div id="help">Trascina lo schermo per guardarti intorno</div>
+<div id="crosshair"></div>
 
-<script>
-const photos={
-courtyard:"https://upload.wikimedia.org/wikipedia/commons/e/ef/Warwick_castle_interior.jpg",
-hall:"https://upload.wikimedia.org/wikipedia/commons/5/51/Bracciano_Castle_interior.jpg",
-fireplace:"https://upload.wikimedia.org/wikipedia/commons/a/aa/Dining_Room%2C_Kilkenny_Castle%2C_Cill_Chainnigh%2C_%C3%89ire_%2846594911311%29.jpg",
-stone:"https://upload.wikimedia.org/wikipedia/commons/0/0c/The_interior_of_the_castle_01.jpg"
-};
+<div id="controls">
+ <div class="pad">
+  <div></div><button class="control" data-key="forward">↑</button><div></div>
+  <button class="control" data-key="left">←</button><button class="control" data-key="back">↓</button><button class="control" data-key="right">→</button>
+  <div></div><button class="control" data-key="run">⚡</button><div></div>
+ </div>
+</div>
+<div id="look">Trascina per girare</div>
+<div id="message">Esplora liberamente Hogwarts</div>
 
-const places=[
-{name:"Ingresso principale",photo:"courtyard",desc:"L'ingresso monumentale del castello. Da qui iniziano le giornate degli studenti.",objects:["Il grande portone","Le torce","La scalinata","La bacheca degli avvisi"]},
-{name:"Sala Grande",photo:"fireplace",desc:"Il luogo in cui gli studenti si riuniscono per i pasti, le cerimonie e gli annunci della scuola.",objects:["Il tavolo dei professori","I tavoli delle Case","Le candele sospese","Il soffitto incantato"]},
-{name:"Biblioteca",photo:"hall",desc:"Un ambiente silenzioso, pieno di libri, scaffali e antichi volumi di magia.",objects:["Gli scaffali","La sezione proibita","I tavoli di studio","I libri antichi"]},
-{name:"Scalinata principale",photo:"hall",desc:"Le scale collegano i diversi piani del castello e conducono alle principali aree scolastiche.",objects:["Le scale mobili","I quadri","I corridoi","Le porte misteriose"]},
-{name:"Sala comune",photo:"fireplace",desc:"Il luogo in cui gli studenti della Casa si ritrovano per riposare, studiare e trascorrere il tempo libero.",objects:["Il camino","Le poltrone","Il tavolo centrale","La bacheca della Casa"]},
-{name:"Dormitori",photo:"hall",desc:"Le camere degli studenti, con letti a baldacchino, bauli e spazi personali.",objects:["I letti","I bauli","Le tende","I comodini"]},
-{name:"Aula di Pozioni",photo:"hall",desc:"Un'aula dedicata alla preparazione di pozioni, con calderoni e ingredienti magici.",objects:["I calderoni","Gli scaffali degli ingredienti","La cattedra","I libri di pozioni"]},
-{name:"Aula di Incantesimi",photo:"stone",desc:"Qui gli studenti imparano formule, gesti e tecniche per eseguire incantesimi.",objects:["I banchi","Le bacchette","La lavagna","I libri di incantesimi"]},
-{name:"Serre",photo:"courtyard",desc:"Le serre ospitano piante magiche e lezioni di Erbologia.",objects:["Le piante magiche","I vasi","Gli attrezzi","I tavoli da lavoro"]},
-{name:"Cortile interno",photo:"courtyard",desc:"Uno spazio all'aperto in cui gli studenti si incontrano tra una lezione e l'altra.",objects:["Il pozzo","Le arcate","Le panchine","Il giardino"]},
-{name:"Infermeria",photo:"hall",desc:"L'ambiente dedicato alle cure degli studenti e al riposo durante la convalescenza.",objects:["I letti","Gli armadietti","Le pozioni curative","La scrivania"]},
-{name:"Ufficio del preside",photo:"fireplace",desc:"Un ufficio riservato, pieno di oggetti particolari e ricordi dei precedenti presidi.",objects:["La scrivania","I quadri","Gli oggetti magici","La libreria"]},
-{name:"Campo di Quidditch",photo:"courtyard",desc:"Il campo sportivo dove si svolgono gli allenamenti e le partite tra le Case.",objects:["Gli anelli","Le tribune","Gli spogliatoi","La bacheca delle partite"]},
-{name:"Sala dei Trofei",photo:"hall",desc:"Una sala che custodisce coppe, medaglie e riconoscimenti conquistati dagli studenti.",objects:["Le coppe","Le medaglie","Le targhe","Le fotografie"]}
-];
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 
-const grid=document.getElementById("grid");
-const room=document.getElementById("room");
-const home=document.getElementById("home");
-const main=document.getElementById("places");
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x111522);
+scene.fog=new THREE.Fog(0x111522,18,75);
 
-function makeCard(place){
-const index=places.indexOf(place);
-return `<button class="place" style="background-image:linear-gradient(0deg,rgba(0,0,0,.25),rgba(0,0,0,.1)),url('${photos[place.photo]}')" onclick="openRoom(${index})"><span>${place.name}</span></button>`;
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,150);
+camera.position.set(0,1.7,12);
+
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth,innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.HemisphereLight(0xc7d5ff,0x392b20,1.5));
+
+const light=new THREE.DirectionalLight(0xffe4b0,2);
+light.position.set(-8,15,8);
+light.castShadow=true;
+scene.add(light);
+
+const stone=new THREE.MeshStandardMaterial({color:0x66636a,roughness:.95});
+const darkStone=new THREE.MeshStandardMaterial({color:0x37343d,roughness:1});
+const floorMat=new THREE.MeshStandardMaterial({color:0x48434a,roughness:.85});
+const wood=new THREE.MeshStandardMaterial({color:0x54351f,roughness:.8});
+const gold=new THREE.MeshStandardMaterial({color:0xb99a58,metalness:.5,roughness:.4});
+const flame=new THREE.MeshStandardMaterial({color:0xffb642,emissive:0xff7100,emissiveIntensity:2});
+
+function box(w,h,d,mat,x,y,z){
+ const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);
+ m.position.set(x,y,z);
+ m.castShadow=true;
+ m.receiveShadow=true;
+ scene.add(m);
+ return m;
 }
 
-grid.innerHTML=places.map(makeCard).join("");
-
-function openRoom(index){
-const p=places[index];
-home.style.display="none";
-main.style.display="none";
-room.style.display="block";
-document.getElementById("roomTitle").textContent=p.name;
-document.getElementById("roomDescription").textContent=p.desc;
-document.getElementById("roomImage").style.backgroundImage=`url('${photos[p.photo]}')`;
-document.getElementById("hotspots").innerHTML=p.objects.map((o,i)=>`<button class="hotspot" onclick="showDetail(${index},${i})">${o} ↗️</button>`).join("");
-document.getElementById("detail").style.display="none";
-document.getElementById("otherPlaces").innerHTML=places.filter((x,i)=>i!==index).slice(0,4).map(makeCard).join("");
-window.scrollTo(0,0);
+function floor(x,z,w,d){
+ box(w,.35,d,floorMat,x,-.2,z);
 }
 
-function showDetail(placeIndex,objectIndex){
-const p=places[placeIndex];
-const o=p.objects[objectIndex];
-const detail=document.getElementById("detail");
-detail.textContent=o+": esplora questo elemento e immagina le attività e le storie che si svolgono in questo ambiente.";
-detail.style.display="block";
+function wall(x,y,z,w,h,d,mat=stone){
+ return box(w,h,d,mat,x,y,z);
 }
 
-function goHome(){
-room.style.display="none";
-home.style.display="flex";
-main.style.display="block";
-window.scrollTo(0,0);
+function torch(x,y,z){
+ box(.12,.65,.12,gold,x,y,z);
+ const f=new THREE.Mesh(new THREE.SphereGeometry(.15,12,12),flame);
+ f.position.set(x,y+.4,z);
+ scene.add(f);
+ const l=new THREE.PointLight(0xffa43d,2,9);
+ l.position.set(x,y+.5,z);
+ scene.add(l);
 }
+
+function column(x,z){
+ const c=new THREE.Mesh(new THREE.CylinderGeometry(.45,.55,6,12),darkStone);
+ c.position.set(x,3,z);
+ c.castShadow=true;
+ scene.add(c);
+ const top=new THREE.Mesh(new THREE.CylinderGeometry(.7,.7,.3,12),stone);
+ top.position.set(x,6,z);
+ scene.add(top);
+}
+
+function arch(x,z){
+ wall(x,2.8,z,.45,5.6,.7,darkStone);
+ wall(x+4,2.8,z,.45,5.6,.7,darkStone);
+ wall(x+2,5.6,z,4,.5,.7,darkStone);
+}
+
+function label(text,x,y,z){
+ const canvas=document.createElement('canvas');
+ canvas.width=512;canvas.height=128;
+ const ctx=canvas.getContext('2d');
+ ctx.fillStyle='#e6d2a3';
+ ctx.font='bold 46px Georgia';
+ ctx.textAlign='center';
+ ctx.fillText(text,256,78);
+ const tex=new THREE.CanvasTexture(canvas);
+ const mesh=new THREE.Mesh(new THREE.PlaneGeometry(4,1),new THREE.MeshBasicMaterial({map:tex,transparent:true}));
+ mesh.position.set(x,y,z);
+ scene.add(mesh);
+}
+
+function room(name,x,z,w,d){
+ floor(x,z,w,d);
+ wall(x-w/2,2.5,z,w,.5,.5);
+ wall(x+w/2,2.5,z,w,.5,.5);
+ wall(x,2.5,z-d/2,.5,5,d);
+ wall(x,2.5,z+d/2,w,.5,.5);
+ label(name,x,4.3,z-d/2+.4);
+}
+
+floor(0,0,10,70);
+wall(-5,2.5,0,.5,5,70);
+wall(5,2.5,0,.5,5,70);
+wall(0,5,0,10,.5,70);
+
+for(let z=-30;z<=30;z+=6){
+ column(-3.8,z);
+ column(3.8,z);
+ torch(-4.4,2.7,z+1);
+ torch(4.4,2.7,z+1);
+}
+
+// Ambienti laterali collegati al corridoio
+room('BIBLIOTECA',-11,-18,12,13);
+room('AULA DI POZIONI',11,-18,12,13);
+room('SALA GRANDE',-11,3,12,16);
+room('SALA COMUNE',11,3,12,16);
+room('AULA DI INCANTESIMI',-11,25,12,13);
+room('INFERMERIA',11,25,12,13);
+
+// Aperture e passaggi
+for(const z of [-18,3,25]){
+ wall(-5,1.5,z-2,.5,3,2,stone);
+ wall(-5,1.5,z+2,.5,3,2,stone);
+ wall(5,1.5,z-2,.5,3,2,stone);
+ wall(5,1.5,z+2,.5,3,2,stone);
+}
+
+// Decorazioni della biblioteca
+for(let i=0;i<5;i++){
+ box(.5,3,.8,wood,-15+i*2,1.5,-22);
+ for(let j=0;j<4;j++){
+  box(.3,.6,.55,new THREE.MeshStandardMaterial({color:[0x7a2930,0x345b48,0x9b793b,0x303e67][j]}),-15+i*2,1+j*.65,-22);
+ }
+}
+
+// Tavoli nella Sala Grande
+for(let i=0;i<3;i++){
+ box(1.4,.25,8,wood,-13+i*2,1.1,3);
+ for(let z=0;z<4;z++){
+  box(.8,.9,.8,wood,-13+i*2,1.5,z*2);
+ }
+}
+
+// Banchi nelle aule
+for(const x of [-13,13]){
+ for(let z of [-22,-18,-14]){
+  box(2,.3,1.2,wood,x,1,z);
+  box(.3,1,.3,wood,x-.7,.5,z);
+  box(.3,1,.3,wood,x+.7,.5,z);
+ }
+}
+
+const keys={forward:false,back:false,left:false,right:false,run:false};
+let yaw=0,pitch=0;
+let dragging=false,lastX=0,lastY=0;
+const velocity=new THREE.Vector3();
+const playerRadius=.35;
+
+function setKey(k,v){keys[k]=v}
+
+document.querySelectorAll('[data-key]').forEach(b=>{
+ const k=b.dataset.key;
+ b.addEventListener('pointerdown',e=>{e.preventDefault();setKey(k,true);b.setPointerCapture(e.pointerId)});
+ b.addEventListener('pointerup',()=>setKey(k,false));
+ b.addEventListener('pointercancel',()=>setKey(k,false));
+ b.addEventListener('lostpointercapture',()=>setKey(k,false));
+});
+
+window.addEventListener('keydown',e=>{
+ if(e.key==='w'||e.key==='ArrowUp')setKey('forward',true);
+ if(e.key==='s'||e.key==='ArrowDown')setKey('back',true);
+ if(e.key==='a'||e.key==='ArrowLeft')setKey('left',true);
+ if(e.key==='d'||e.key==='ArrowRight')setKey('right',true);
+ if(e.shiftKey)setKey('run',true);
+});
+window.addEventListener('keyup',e=>{
+ if(e.key==='w'||e.key==='ArrowUp')setKey('forward',false);
+ if(e.key==='s'||e.key==='ArrowDown')setKey('back',false);
+ if(e.key==='a'||e.key==='ArrowLeft')setKey('left',false);
+ if(e.key==='d'||e.key==='ArrowRight')setKey('right',false);
+ if(e.key==='Shift')setKey('run',false);
+});
+
+renderer.domElement.addEventListener('pointerdown',e=>{
+ if(e.pointerType==='mouse'&&e.button!==0)return;
+ dragging=true;lastX=e.clientX;lastY=e.clientY;
+});
+window.addEventListener('pointerup',()=>dragging=false);
+window.addEventListener('pointermove',e=>{
+ if(!dragging)return;
+ const dx=e.clientX-lastX,dy=e.clientY-lastY;
+ lastX=e.clientX;lastY=e.clientY;
+ yaw-=dx*.004;
+ pitch-=dy*.003;
+ pitch=Math.max(-1.25,Math.min(1.25,pitch));
+});
+
+function updateLocation(){
+ const x=camera.position.x,z=camera.position.z;
+ let name='Corridoio principale';
+ if(x < -5 && z < -11 && z > -26)name='Biblioteca';
+ else if(x > 5 && z < -11 && z > -26)name='Aula di Pozioni';
+ else if(x < -5 && z > -6 && z < 12)name='Sala Grande';
+ else if(x > 5 && z > -6 && z < 12)name='Sala Comune';
+ else if(x < -5 && z > 18 && z < 31)name='Aula di Incantesimi';
+ else if(x > 5 && z > 18 && z < 31)name='Infermeria';
+ document.getElementById('location').textContent=name;
+}
+
+function animate(){
+ requestAnimationFrame(animate);
+ const dt=Math.min(clock.getDelta(),.04);
+ const speed=keys.run?7:3.7;
+ const forward=new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));
+ const right=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
+ const move=new THREE.Vector3();
+ if(keys.forward)move.add(forward);
+ if(keys.back)move.sub(forward);
+ if(keys.right)move.add(right);
+ if(keys.left)move.sub(right);
+ if(move.lengthSq()>0){
+  move.normalize().multiplyScalar(speed*dt);
+  const nx=camera.position.x+move.x;
+  const nz=camera.position.z+move.z;
+  if(nx>-17.5&&nx<17.5)camera.position.x=nx;
+  if(nz>-32&&nz<35)camera.position.z=nz;
+ }
+ camera.rotation.order='YXZ';
+ camera.rotation.y=yaw;
+ camera.rotation.x=pitch;
+ camera.position.y=1.7;
+ updateLocation();
+ renderer.render(scene,camera);
+}
+const clock=new THREE.Clock();
+
+document.getElementById('enter').addEventListener('click',()=>{
+ document.getElementById('start').style.display='none';
+ animate();
+});
+
+window.addEventListener('resize',()=>{
+ camera.aspect=innerWidth/innerHeight;
+ camera.updateProjectionMatrix();
+ renderer.setSize(innerWidth,innerHeight);
+});
 </script>
 </body>
 </html>
