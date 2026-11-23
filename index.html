@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hogwarts | The Interactive Experience</title>
+<style>
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #10131c;
+  color: #f5e8c8;
+  font-family: Georgia, serif;
+  text-align: center;
+}
+header { padding: 35px 12px 20px; }
+h1 { font-size: 38px; letter-spacing: 5px; margin: 0; }
+h2 { font-size: 15px; letter-spacing: 3px; font-weight: normal; }
+#scene {
+  min-height: 65vh;
+  padding: 35px 15px;
+  background: linear-gradient(#17243a,#11131c);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#scene h3 { font-size: 30px; }
+#places {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 12px;
+  width: 100%;
+  max-width: 600px;
+}
+button {
+  background: #29354b;
+  color: #f5e8c8;
+  border: 1px solid #b69b65;
+  border-radius: 8px;
+  padding: 20px 8px;
+  font: 17px Georgia,serif;
+  cursor: pointer;
+}
+button:active { background: #665331; }
+#back { margin: 20px; display: none; }
+footer { padding: 20px; color: #b9a77e; }
+</style>
+</head>
+<body>
+
+<header>
+<h1>HOGWARTS</h1>
+<h2>THE INTERACTIVE EXPERIENCE</h2>
+</header>
+
+<main id="scene">
+<h3>Benvenuta a Hogwarts</h3>
+<p>Esplora il castello e scopri i suoi segreti.</p>
+<div id="places">
+<button onclick="enter('Sala Grande')">Sala Grande</button>
+<button onclick="enter('Biblioteca')">Biblioteca</button>
+<button onclick="enter('Aula di Pozioni')">Aula di Pozioni</button>
+<button onclick="enter('Cortile')">Cortile</button>
+<button onclick="enter('Scalinata')">Scalinata</button>
+<button onclick="enter('Sala Comune')">Sale Comuni</button>
+</div>
+</main>
+
+<button id="back" onclick="home()">← Torna a Hogwarts</button>
+
+<footer>Una nuova avventura ti aspetta.</footer>
+
+<script>
+const scene = document.getElementById('scene');
+const back = document.getElementById('back');
+
+function enter(place) {
+  scene.innerHTML = `
+    <h3>${place}</h3>
+    <p>Sei entrata in ${place}.</p>
+    <p>Esplora questo luogo di Hogwarts.</p>
+  `;
+  back.style.display = 'inline-block';
+}
+
+function home() {
+  location.reload();
+}
+</script>
+
+</body>
+</html>
